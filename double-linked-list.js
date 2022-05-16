@@ -1,5 +1,3 @@
-const { networkInterfaces } = require('os');
-
 class Node {
 	constructor(val) {
 		this.val = val;
@@ -227,3 +225,5 @@ class DoubleLinkedList {
 		return total / numNums;
 	}
 }
+
+module.exports = DoubleLinkedList;
