@@ -1,15 +1,14 @@
-/** Node: node for a singly linked list. */
+const { networkInterfaces } = require('os');
 
 class Node {
 	constructor(val) {
 		this.val = val;
 		this.next = null;
+		this.prev = null;
 	}
 }
 
-/** LinkedList: chained together nodes. */
-
-class LinkedList {
+class DoubleLinkedList {
 	constructor(vals = []) {
 		this.head = null;
 		this.tail = null;
@@ -17,7 +16,6 @@ class LinkedList {
 
 		for (let val of vals) this.push(val);
 	}
-
 	/** push(val): add new value to end of list. */
 
 	push(val) {
@@ -26,7 +24,9 @@ class LinkedList {
 		if (this.length === 0) {
 			this.head = newNode;
 			this.tail = newNode;
+			newNode.prev = null;
 		} else {
+			newNode.prev = this.tail;
 			this.tail.next = newNode;
 			this.tail = newNode;
 		}
@@ -42,6 +42,7 @@ class LinkedList {
 			return this.push(val);
 		} else {
 			newNode.next = this.head;
+			this.head.prev = newNode;
 			this.head = newNode;
 			this.length++;
 		}
@@ -87,6 +88,7 @@ class LinkedList {
 		} else {
 			firstNode = this.head;
 			this.head = this.head.next;
+			this.head.prev = null;
 			this.length--;
 		}
 		return firstNode.val;
@@ -164,6 +166,8 @@ class LinkedList {
 			}
 			previousNode.next = newNode;
 			newNode.next = foundNode;
+			foundNode.prev = newNode;
+			newNode.prev = previousNode;
 			this.length++;
 		}
 	}
@@ -187,12 +191,23 @@ class LinkedList {
 		if (idx === 0) return this.shift();
 		else if (idx === this.length - 1) return this.pop();
 		else {
-			let previousNode = this.getAt(idx - 1);
+			let previousNode;
+			if (idx > this.length - 1 || idx < 0) {
+				throw new Error('Invalid index');
+			}
+			let current = this.head;
+			let position = 0;
+			while (current !== null) {
+				if (position === idx - 1) {
+					previousNode = current;
+				}
+				current = current.next;
+				position++;
+			}
 			previousNode.next = foundNode.next;
-			foundNode.next = null;
-			length--;
-			return foundNode.val;
+			foundNode.next.prev = previousNode;
 		}
+		return foundNode.val;
 	}
 
 	/** average(): return an average of all values in the list */
@@ -212,5 +227,3 @@ class LinkedList {
 		return total / numNums;
 	}
 }
-
-module.exports = LinkedList;
