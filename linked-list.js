@@ -200,9 +200,22 @@ class LinkedList {
 
 	/** average(): return an average of all values in the list */
 
-	average() {}
+	average() {
+		let total = 0;
+		let numNums = 0;
+		if (this.length === 0) return total;
+		let current = this.head;
+		while (current !== null) {
+			if (typeof current.val === 'number') {
+				total += current.val;
+				numNums++;
+			}
+			current = current.next;
+		}
+		return total / numNums;
+	}
 }
 
-// let list = new LinkedList([ 'First', 'Second', 'Third' ]);
-// console.log(list.removeAt(0));
+let list = new LinkedList([ 2, 3, 1, 1, 7, 6, 9 ]);
+console.log(list.average());
 module.exports = LinkedList;
